@@ -1,0 +1,51 @@
+#!/bin/bash
+
+usage() {
+  echo
+  echo "USAGE"
+  echo
+  echo "  $ ./shuffleLightningTalkSpeakers [name1] [name2] [name3] ..."
+  echo
+  echo "EXAMPLE"
+  echo
+  echo "  $ ./shuffleLightningTalkSpeakers yamada suzuki tanaka"
+  echo
+  echo "  - * - * - * - * - * - * - * - * - * -"
+  echo
+  echo "  1. suzuki"
+  echo "  2. yamada"
+  echo "  3. tanaka"
+  echo
+  echo "  - * - * - * - * - * - * - * - * - * -"
+  echo
+}
+
+shuffle() {
+  echo $@ | tr " " "\n" | awk 'BEGIN{ srand() }{ print sprintf("%.10f %s", rand(), $0) }' | sort -n | cut -d " " -f 2 | tr "\n" " "
+}
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 1
+fi
+
+speakers=$@
+
+for _ in `seq $#`; do
+  echo "Shuffle!"
+  speakers=`shuffle $speakers`
+  sleep 1
+done
+
+echo
+echo "- * - * - * - * - * - * - * - * - * -"
+echo
+
+i=0; for speaker in $speakers; do
+  echo $((++i))". $speaker"
+  say "$speaker san"
+done
+
+echo
+echo "- * - * - * - * - * - * - * - * - * -"
+echo
